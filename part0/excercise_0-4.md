@@ -9,7 +9,7 @@ participant server
     server-->>browser: TEXT/HTML URL Redirect
     deactivate server
 
-    Note Left of server: The server gets new note from post request and adds it to the JSON which contains all notes and send 302 status which instructs the browser to reload.
+    Note Left of server: The server gets new note from POST request and adds it to the JSON which contains all notes.
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate server
