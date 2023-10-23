@@ -7,14 +7,19 @@ const Button = ({ handleClick, text }) => (
   </button>
 )
 
-const Stat = ({ name, value }) => (<p>{name} {value} </p>)
-
 const Stats = ({ rating }) => {
+
+  let averageRating = (rating.good * 1 - rating.bad) / (rating.good + rating.neutral)
+  let totalRating = rating.good + rating.neutral + rating.bad
+  let positiveFeedback = (rating.good / totalRating) * 100
   return (
     <div>
       <p>Good {rating.good} </p>
       <p>Neutral {rating.neutral} </p>
       <p>Bad {rating.bad} </p>
+      <p>Total Rating {totalRating}</p>
+      <p>Average Rating {averageRating} </p>
+      <p>Positive Feedback {positiveFeedback}% </p>
     </div>
   )
 
@@ -30,7 +35,6 @@ const App = () => {
       bad: 0
     }
   )
-  console.log(rating);
 
 
 
