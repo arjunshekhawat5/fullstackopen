@@ -7,27 +7,37 @@ const Button = ({ handleClick, text }) => (
   </button>
 )
 
+const StatLine = ({ text, value }) => (
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
+)
+
 const Stats = ({ rating }) => {
 
-  let averageRating = (rating.good * 1 - rating.bad) / (rating.good + rating.neutral)
   let totalRating = rating.good + rating.neutral + rating.bad
-  let positiveFeedback = (rating.good / totalRating) * 100
+  let averageRating = ((rating.good * 1 - rating.bad) / (totalRating)).toFixed(1)
+  let positiveFeedback = ((rating.good / totalRating) * 100).toFixed(1) + "%"
+
+  if (totalRating == 0) return (<h4>No Feedback Given</h4>)
+
   return (
-    <div>
-      <p>Good {rating.good} </p>
-      <p>Neutral {rating.neutral} </p>
-      <p>Bad {rating.bad} </p>
-      <p>Total Rating {totalRating}</p>
-      <p>Average Rating {averageRating} </p>
-      <p>Positive Feedback {positiveFeedback}% </p>
-    </div>
+    <table>
+      <tbody>
+        <StatLine text="Good" value={rating.good} />
+        <StatLine text="Neutral" value={rating.neutral} />
+        <StatLine text="Bad" value={rating.bad} />
+        <StatLine text="Total Ratings" value={totalRating} />
+        <StatLine text="Average Rating" value={averageRating} />
+        <StatLine text="Positve Feedback" value={positiveFeedback} />
+      </tbody>
+    </table>
   )
 
 }
 
 const App = () => {
-  // save clicks of button on its own state
-
   const [rating, setRating] = useState(
     {
       good: 0,
@@ -35,9 +45,6 @@ const App = () => {
       bad: 0
     }
   )
-
-
-
   return (
     <div>
       <h1>Give feedback</h1>
