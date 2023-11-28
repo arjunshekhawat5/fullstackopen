@@ -1,3 +1,3 @@
-const Name = ({id, name}) => <div> {name} </div>
+const Name = ({id, name, number}) => <li key={id}> {name} {number} </li>
 
 export default Name
