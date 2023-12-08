@@ -9,11 +9,12 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState(' ')
+  const baseUrl = 'http://localhost:3001/persons'
 
   useEffect(() => {
     console.log('in effect');
     axios
-      .get('http://localhost:3001/persons')
+      .get(baseUrl)
       .then(response => {
         console.log('response handler', response.data);
         setPersons(response.data)
@@ -32,7 +33,12 @@ const App = () => {
       alert(`${newName} is already in phonebook`)
     }
     else {
-      setPersons(persons.concat(nameObject))
+      axios
+        .post(`${baseUrl}`, nameObject)
+        .then(response => {
+          console.log(response)
+          setPersons(persons.concat(response.data))
+        })
     }
 
     setNewName('')
