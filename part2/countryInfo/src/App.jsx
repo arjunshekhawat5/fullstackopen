@@ -10,11 +10,11 @@ const App = () => {
   useEffect(() => {
     console.log('in effect');
     countryServices.getAll()
-                    .then(countries => {
-                      const allCountries = countries.map(country => country.name.common)
-                      //console.log(allCountries);
-                      setCountries(allCountries)
-                    })
+      .then(countries => {
+        const allCountries = countries.map(country => country.name.common)
+        //console.log(allCountries);
+        setCountries(allCountries)
+      })
   }, [])
 
   const formHandler = (event) => {
@@ -22,18 +22,16 @@ const App = () => {
     setFilter(event.target.value.trim())
   }
 
-const filteredCountries = filter.length !== 0 && countries?
-                          countries.filter(country => country.includes(filter))
-                          :null
-//console.log(filteredCountries);
-console.log('Filter right now',countries.sort());
+  const filteredCountries = filter.length !== 0 && countries
+    ? countries.filter(country => country.toLowerCase().includes(filter.toLowerCase()))
+    : null
+  //console.log(filteredCountries);
+  //console.log('Filter right now',countries.sort());
 
   return (
     <div>
       <Filter formHandler={formHandler} country={filter} />
-      <ul>
-        <Countries countries={filteredCountries} />
-      </ul>
+      <Countries countries={filteredCountries} />
     </div>
   )
 }
