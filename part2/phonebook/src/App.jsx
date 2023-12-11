@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react'
+import './index.css'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-
+  const [notification, setNotification] = useState(null)
+  let msg;
   useEffect(() => {
     console.log('in effect');
 
@@ -26,10 +29,18 @@ const App = () => {
       })
   }, [])
 
+  const notify = ({notification}) => {
+    setNotification(notification)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
+
   const addPerson = (newNameObject) => {
     personService.create(newNameObject)
       .then(newObject => {
         console.log('Adding new name', newObject);
+        notify(`Successfulu added ${newObject.name} to phonebook!`)
         setPersons(persons.concat(newObject))
       })
   }
@@ -41,10 +52,14 @@ const App = () => {
       .then(newObject => {
         const newPersons = persons.map(p => p.id === newObject.id ? newObject : p)
         setPersons(newPersons)
-        console.log(`Update number for ${person.name}`)
+        msg = `Successfully updated number for ${person.name}!`
+        
+        console.log(msg);
+        notify(msg);
       })
       .catch(error => {
-        alert(`Could not update number for ${person.name} error ${error}`)
+        //alert(`Could not update number for ${person.name} error ${error}`)
+        notify(`Could not update number for ${person.name}, error ${error}`)
       })
   }
 
@@ -58,7 +73,9 @@ const App = () => {
         updatePerson(currentPerson, newNumber)
       }
       else {
-        console.log(`Did not update number for ${newName} after confirmation declined!`)
+        msg = `Number update declined for ${newName}!`
+        console.log(msg);
+        notify(msg);
       }
     }
     else {
@@ -81,15 +98,24 @@ const App = () => {
         .then(response => {
           const newPersons = persons.filter(p => p.id !== person.id)
           setPersons(newPersons)
-          console.log(`Deleted ${person.name} with id - ${person.id}`, response)
+          msg = `Deleted ${person.name} with id - ${person.id}`
+
+          console.log(msg);
+          notify(msg)
         })
         .catch(error => {
-          console.error(`could not remove person with id ${person.id}, promise rejected ${error}`)
-          alert(`Could not remove person ${person.name}. Please try again!`)
+          //console.error(`could not remove person with id ${person.id}, promise rejected ${error}`)
+         // alert(`Could not remove person ${person.name}. Please try again!`)
+          msg = `Could not remove person ${person.name}. Please try again!`
+
+          console.log(msg);
+          notify(msg)
         })
     }
     else {
-      console.log(`Did not remove ${person.name} with id ${person.id} because confirmation declined!`);
+      msg = `Did not remove ${person.name} as confirmation declined!`;
+      console.log(msg);
+      notify(msg);
     }
 
   }
@@ -117,6 +143,8 @@ const App = () => {
   return (
     <div onSubmit={addName} >
       <h2>Phonebook</h2>
+      < Notification notification={notification} />
+
       <Filter persons={persons}
         filter={filter}
         handleFilterChange={handleFilterChange}
