@@ -1,17 +1,10 @@
-const Countries = ({ countries }) => {
+import Country from "./Country"
+
+const Countries = ({ countries, clickHandler}) => {
     //console.log(countries);
-    if (!countries) {
-        return null
-    }
-    else if (countries.length > 10) {
-        return (
-            <p>Too many matches, please specify more!</p>
-        )
-    }
     return (
-        //generate unique ids
         <ul>
-            {countries.map(country => <li key={country.length}>{country}</li>)}
+            {countries.map (country => <Country country={country} clickHandler={clickHandler} />)}
         </ul>
     )
 }
