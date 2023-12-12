@@ -1,10 +1,10 @@
 
 const Country = ({country, clickHandler }) => {
-    console.log('clickHandler type...', typeof(clickHandler));
+    console.log('country id..',country.area);
     return (
         <li key={country.area}>
             {country.name.common}
-            <button onClick={() => clickHandler(country)}>Show Info</button>
+            <button key={country.area} onClick={() => clickHandler(country)}>Show Info</button>
         </li>
     )
 }
