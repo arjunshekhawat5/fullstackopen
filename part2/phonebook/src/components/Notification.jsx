@@ -1,9 +1,12 @@
-const Notification = ({notification}) => {
-    if (notification === null){
+const Notification = ({ notification, isError }) => {
+    if (notification === null) {
         return null
     }
-    return(
-        <div className="notification">
+    //console.log('type of notification', typeof (notification), notification)
+    const className = isError ? 'error' : 'notification'
+    console.log(className)
+    return (
+        <div className={className}>
             {notification}
         </div>
     )
