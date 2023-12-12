@@ -24,7 +24,7 @@ const App = () => {
     fetchWeather()
   }, [country])
 
-  const fetchAllCountries =() => {
+  const fetchAllCountries = () => {
     setLoading(true)
     console.log('Fetching all countries data..');
     countryServices.getAll()
@@ -39,22 +39,22 @@ const App = () => {
   }
 
   const fetchWeather = () => {
-    if(country){
-      const {latlng} = country.capitalInfo
+    if (country) {
+      const { latlng } = country.capitalInfo
       const [lat, lng] = latlng
 
-      console.log("Fetching weather for [lattitude, longitude] - ",lat, lng);
+      console.log("Fetching weather for [lattitude, longitude] - ", lat, lng);
 
       setLoading(true)
       weatherServices.getWeather(lat, lng, API_KEY)
-                    .then(data => {
-                      setCapitalWeather(data)
-                      console.log('Fetched weather data...', data);
-                    })
-                    .catch(error => {
-                      console.error('Error occured during getting weather data', error)
-                    })
-                    .finally(setLoading(false))
+        .then(data => {
+          setCapitalWeather(data)
+          console.log('Fetched weather data...', data);
+        })
+        .catch(error => {
+          console.error('Error occured during getting weather data', error)
+        })
+        .finally(setLoading(false))
     }
   }
 
@@ -72,25 +72,25 @@ const App = () => {
   const filteredCountries = filter.length !== 0 && countries
     ? countries.filter(country => country.name.common.toLowerCase().includes(filter.toLowerCase()))
     : null;
-  
+
   const filteredContent = () => {
-    if(loading) console.log('Loading....')
-    else if(!filteredCountries || country) return null
-    else if(filteredCountries.length == 1) setCountry(filteredCountries[0])
-    else if(filteredCountries.length > 10) return <p>Too many matches, please specify more!</p>
+    if (loading) console.log('Loading....')
+    else if (!filteredCountries || country) return null
+    else if (filteredCountries.length == 1) setCountry(filteredCountries[0])
+    else if (filteredCountries.length > 10) return <p>Too many matches, please specify more!</p>
     else return <Countries countries={filteredCountries} clickHandler={clickHandler} />
   }
 
   return (
     <div>
-       <CountryFilter formHandler={formHandler} country={filter} />
+      <CountryFilter formHandler={formHandler} country={filter} />
       {country
-              ? <div>
-                  <InfoCard country={country} />
-                  <Weather data={capitalWeather}  />
-                </div>
-              :''}
-      {filteredContent()}      
+        ? <div>
+          <InfoCard country={country} />
+          <Weather data={capitalWeather} />
+        </div>
+        : ''}
+      {filteredContent()}
     </div>
   )
 }
