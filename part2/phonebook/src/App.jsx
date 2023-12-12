@@ -12,10 +12,14 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [notification, setNotification] = useState('')
+  const [error, setError] = useState(false)
   let msg;
   useEffect(() => {
     console.log('in effect');
+    getPhonebook()
+  }, [])
 
+  const getPhonebook = () => {
     personService
       .getAll()
       .then(persons => {
@@ -27,11 +31,13 @@ const App = () => {
           `promise rejected ${error}`
         )
       })
-  }, [])
+  }
 
-  const notify = (notification) => {
-    console.log("notifying...", notification)
+  const notify = (notification, isError) => {
+    //console.log("notifying...", notification)
     setNotification(notification)
+    setError(isError)
+    // console.log(error)
     setTimeout(() => {
       setNotification(null)
     }, 5000)
@@ -41,8 +47,13 @@ const App = () => {
     personService.create(newNameObject)
       .then(newObject => {
         console.log('Adding new name', newObject);
-        notify(`Successfulu added ${newObject.name} to phonebook!`)
+        notify(`Successfulu added ${newObject.name} to phonebook!`, false)
         setPersons(persons.concat(newObject))
+      })
+      .catch(error => {
+        msg = `Could not add ${newNameObject.name} to the phonebook.`
+        console.error(msg, error)
+        notify(error, true)
       })
   }
 
@@ -56,11 +67,12 @@ const App = () => {
         msg = `Successfully updated number for ${person.name}!`
 
         console.log(msg);
-        notify(msg);
+        notify(msg, false);
       })
       .catch(error => {
-        //alert(`Could not update number for ${person.name} error ${error}`)
-        notify(`Could not update number for ${person.name}, error ${error}`)
+        msg = `Could not update number for ${person.name}, as it has been deleted!`
+        console.error(msg, error);
+        notify(msg, true)
       })
   }
 
@@ -76,7 +88,7 @@ const App = () => {
       else {
         msg = `Number update declined for ${newName}!`
         console.log(msg);
-        notify(msg);
+        notify(msg, false);
       }
     }
     else {
@@ -99,24 +111,23 @@ const App = () => {
         .then(response => {
           const newPersons = persons.filter(p => p.id !== person.id)
           setPersons(newPersons)
-          msg = `Deleted ${person.name} with id - ${person.id}`
+          msg = `Deleted ${person.name}.`
 
           console.log(msg);
-          notify(msg)
+          notify(msg, false)
         })
         .catch(error => {
           //console.error(`could not remove person with id ${person.id}, promise rejected ${error}`)
-          // alert(`Could not remove person ${person.name}. Please try again!`)
-          msg = `Could not remove person ${person.name}. Please try again!`
+          msg = `Could not remove ${person.name} as it has already been deleted on server.`
 
           console.log(msg);
-          notify(msg)
+          notify(msg, true)
         })
     }
     else {
       msg = `Did not remove ${person.name} as confirmation declined!`;
       console.log(msg);
-      notify(msg);
+      notify(msg, true);
     }
 
   }
@@ -144,7 +155,10 @@ const App = () => {
   return (
     <div onSubmit={addName} >
       <h2>Phonebook</h2>
-      < Notification notification={notification} />
+      {notification
+        ? <Notification notification={notification} isError={error} />
+        : null
+      }
 
       <Filter persons={persons}
         filter={filter}
