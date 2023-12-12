@@ -11,7 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [notification, setNotification] = useState(null)
+  const [notification, setNotification] = useState('')
   let msg;
   useEffect(() => {
     console.log('in effect');
@@ -29,7 +29,8 @@ const App = () => {
       })
   }, [])
 
-  const notify = ({notification}) => {
+  const notify = (notification) => {
+    console.log("notifying...", notification)
     setNotification(notification)
     setTimeout(() => {
       setNotification(null)
@@ -53,7 +54,7 @@ const App = () => {
         const newPersons = persons.map(p => p.id === newObject.id ? newObject : p)
         setPersons(newPersons)
         msg = `Successfully updated number for ${person.name}!`
-        
+
         console.log(msg);
         notify(msg);
       })
@@ -105,7 +106,7 @@ const App = () => {
         })
         .catch(error => {
           //console.error(`could not remove person with id ${person.id}, promise rejected ${error}`)
-         // alert(`Could not remove person ${person.name}. Please try again!`)
+          // alert(`Could not remove person ${person.name}. Please try again!`)
           msg = `Could not remove person ${person.name}. Please try again!`
 
           console.log(msg);
