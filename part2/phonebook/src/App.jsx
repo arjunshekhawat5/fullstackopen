@@ -92,11 +92,9 @@ const App = () => {
       }
     }
     else {
-      const maxId = Math.max(...persons.map(p => p.id), 0)
       const nameObject = {
         name: newName,
         number: newNumber,
-        id: maxId + 1
       }
       addPerson(nameObject)
     }
