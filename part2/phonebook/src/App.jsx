@@ -53,7 +53,7 @@ const App = () => {
       .catch(error => {
         msg = `Could not add ${newNameObject.name} to the phonebook.`
         console.error(msg, error)
-        notify(error, true)
+        notify(error.response.data.error, true)
       })
   }
 
@@ -72,7 +72,7 @@ const App = () => {
       .catch(error => {
         msg = `Could not update number for ${person.name}, as it has been deleted!`
         console.error(msg, error);
-        notify(msg, true)
+        notify(error.response.data.error, true)
       })
   }
 
