@@ -48,7 +48,7 @@ const App = () => {
     personService.create(newNameObject)
       .then(newObject => {
         console.log('Adding new name', newObject);
-        notify(`Successfulu added ${newObject.name} to phonebook!`, false)
+        notify(`Successfully added ${newObject.name} to phonebook!`, false)
         setPersons(persons.concat(newObject))
       })
       .catch(error => {
