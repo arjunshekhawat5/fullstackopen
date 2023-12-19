@@ -4,7 +4,7 @@ const Notification = ({ notification, isError }) => {
     }
     //console.log('type of notification', typeof (notification), notification)
     const className = isError ? 'error' : 'notification'
-    console.log(className)
+    //console.log(className)
     return (
         <div className={className}>
             {notification}

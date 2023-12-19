@@ -19,6 +19,18 @@ const App = () => {
     getPhonebook()
   }, [])
 
+  const notify = (notification, isError) => {
+    //console.log("notifying...", notification)
+    setNotification(notification)
+    setError(isError)
+
+    console.log(notification)
+
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
+
   const getPhonebook = () => {
     personService
       .getAll()
@@ -27,21 +39,10 @@ const App = () => {
         setPersons(persons)
       })
       .catch(error => {
-        alert(
-          `promise rejected ${error}`
-        )
+        notify(`promise rejected: ${error}`, true)
       })
   }
 
-  const notify = (notification, isError) => {
-    //console.log("notifying...", notification)
-    setNotification(notification)
-    setError(isError)
-    // console.log(error)
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
-  }
 
   const addPerson = (newNameObject) => {
     personService.create(newNameObject)
@@ -51,9 +52,8 @@ const App = () => {
         setPersons(persons.concat(newObject))
       })
       .catch(error => {
-        msg = `Could not add ${newNameObject.name} to the phonebook.`
-        console.error(msg, error)
-        notify(error.response.data.error, true)
+        msg = `Could not add ${newNameObject.name} to the phonebook. Error: ${error.response.data.error}`
+        notify(msg, true)
       })
   }
 
@@ -65,21 +65,18 @@ const App = () => {
         const newPersons = persons.map(p => p.id === newObject.id ? newObject : p)
         setPersons(newPersons)
         msg = `Successfully updated number for ${person.name}!`
-
-        console.log(msg);
         notify(msg, false);
       })
       .catch(error => {
-        msg = `Could not update number for ${person.name}, as it has been deleted!`
-        console.error(msg, error);
-        notify(error.response.data.error, true)
+        msg = `Could not update number for ${person.name}! Error: ${error.response.data.error}`
+        notify(msg, true)
       })
   }
 
   const addName = (event) => {
     event.preventDefault()
 
-    const currentPerson = persons.find(person => person.name === newName)
+    const currentPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
 
     if (currentPerson) {
       if (window.confirm(`Do you want to replace the number for ${newName}? `)) {
@@ -87,7 +84,6 @@ const App = () => {
       }
       else {
         msg = `Number update declined for ${newName}!`
-        console.log(msg);
         notify(msg, false);
       }
     }
@@ -110,21 +106,16 @@ const App = () => {
           const newPersons = persons.filter(p => p.id !== person.id)
           setPersons(newPersons)
           msg = `Deleted ${person.name}.`
-
-          console.log(msg);
           notify(msg, false)
         })
         .catch(error => {
           //console.error(`could not remove person with id ${person.id}, promise rejected ${error}`)
-          msg = `Could not remove ${person.name} as it has already been deleted on server.`
-
-          console.log(msg);
+          msg = `Could not remove ${person.name}!.`
           notify(msg, true)
         })
     }
     else {
       msg = `Did not remove ${person.name} as confirmation declined!`;
-      console.log(msg);
       notify(msg, true);
     }
 
@@ -139,14 +130,14 @@ const App = () => {
   }
 
   const handleFilterChange = (event) => {
-    setFilter(event.target.value.toLowerCase().trim())
+    setFilter(event.target.value.trim())
   }
 
   const filteredPersons = filter.length === 0
     ? persons
     : persons.filter(person => person.name
       .toLowerCase()
-      .startsWith(filter)
+      .startsWith(filter.toLowerCase())
     )
   //console.log(persons, filteredPersons)
 
