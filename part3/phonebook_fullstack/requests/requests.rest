@@ -1,0 +1,22 @@
+GET http://localhost:3001/api/persons
+
+###
+GET http://localhost:3001/info
+
+###
+GET http://localhost:3001/api/persons/3
+
+###
+GET http://localhost:3001/api/persons/2000
+
+###
+DELETE  http://localhost:3001/api/persons/3
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/application/json
+
+{
+    "name": "Arjun",
+    "number": "12345"
+}
