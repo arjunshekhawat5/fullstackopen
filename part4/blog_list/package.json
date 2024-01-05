@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "lodash": "^4.17.21",
     "nodemon": "^3.0.2"
   },
   "jest": {

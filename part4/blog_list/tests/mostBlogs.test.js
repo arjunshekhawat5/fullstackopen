@@ -1,5 +1,4 @@
-const favoriteBlog = require('../utils/list_helper').favoriteBlog
-
+const mostBlogs = require('../utils/list_helper').mostBlogs
 const blogs = [
     {
         _id: "5a422a851b54a676234d17f7",
@@ -50,15 +49,18 @@ const blogs = [
         __v: 0
     }
 ]
-
-describe('the most liked blog is', () => {
-    test('when all the blogs are checked', () => {
-        const result = favoriteBlog(blogs)
-        expect(result).toEqual(blogs[2])
+describe('the author who has the most blogs', () => {
+    test('when given all blogs', () => {
+        const result = mostBlogs(blogs)
+        expect(result).toEqual({
+            author: "Robert C. Martin",
+            blogs: 3
+        })
     })
 
-    test('when blog list is empty', () => {
-        const result = favoriteBlog([])
+    test('when an empty blog list is givem', () => {
+        const result = mostBlogs([])
         expect(result).toBe(null)
     })
+
 })
