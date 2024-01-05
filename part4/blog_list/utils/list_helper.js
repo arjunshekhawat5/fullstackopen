@@ -12,7 +12,7 @@ const totalLikes = (blogs) => {
 }
 
 const favoriteBlog = (blogs) => {
-    if (blogs.length == 0) {
+    if (blogs.length === 0) {
         return null
     }
 
@@ -23,13 +23,13 @@ const favoriteBlog = (blogs) => {
 
 const mostBlogs = (blogs) => {
 
-    if (blogs.length == 0){
+    if (blogs.length === 0) {
         return null
     }
 
     const groupedByAuthor = lodash.groupBy(blogs, (blog) => blog.author)
     //return groupedByAuthor
-    const authorerBlogsArray = Object.entries(groupedByAuthor).map(([author, blogs]) => ({ author, blogs }))
+    const authorBlogsArray = Object.entries(groupedByAuthor).map(([author, blogs]) => ({ author, blogs }))
 
     const sortedAuthors = lodash.sortBy(authorerBlogsArray, (author) => -author.blogs.length)
 
@@ -38,6 +38,7 @@ const mostBlogs = (blogs) => {
         blogs: sortedAuthors[0].blogs.length
     }
 }
+
 
 module.exports = {
     dummy,
