@@ -4,10 +4,11 @@ const logger = require('../utils/logger')
 
 blogRouter.get('/', (request, response, next) => {
     logger.info('getting all blogs from db')
-    Blog.find({}).then(blogs => {
-        response.json(blogs)
-        logger.info('Got the blogs from db')
-    })
+    Blog.find({})
+        .then(blogs => {
+            response.json(blogs)
+            logger.info('Got the blogs from db')
+        })
         .catch((error) => {
             logger.error('error getting all blogs from db:', error)
             next(error)
