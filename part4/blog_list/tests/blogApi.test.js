@@ -17,14 +17,13 @@ beforeEach(async () => {
 })
 
 describe('when some blogs are saved on database', () => {
-    test('blogs are returned as json', async () => {
-        await api
+    test('all the blogs are returned as json', async () => {
+        const response = await api
             .get('/api/blogs/')
             .expect(200)
             .expect('Content-type', /application\/json/)
-            .expect(response => {
-                expect(response.body).toHaveLength(blogs.length)
-            })
+
+        expect(response.body.length).toBe(blogs.length)
     })
 
     test('returned blogs have id property', async () => {
