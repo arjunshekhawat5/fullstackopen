@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const app = require('../app')
 const Blog = require('../models/blog')
 const blogs = require('./testBlogs')
-const { describe } = require('node:test')
 
 const api = supertest(app)
 
@@ -35,7 +34,28 @@ describe('when some blogs are saved on database', () => {
 
 })
 
-describe('')
+describe('when a blog is saved by POST method', () => {
+    test('it succeeds with valid blog data', async () => {
+        const newBlog = {
+            title: "Test blog",
+            author: "Edgar",
+            url: "testURl.com",
+            likes: 42069,
+        }
+        await api
+            .post('/api/blogs/')
+            .send(newBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const response = await api.get('/api/blogs/')
+        expect(response.body.length).toBe(blogs.length + 1)
+
+        const urls = response.body.map(b => b.url)
+        expect(urls).toContain(newBlog.url)
+
+    })
+})
 
 afterAll(async () => {
     await mongoose.connection.close()
