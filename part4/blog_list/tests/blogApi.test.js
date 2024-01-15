@@ -98,7 +98,7 @@ describe('when a blog is saved by POST method', () => {
 })
 
 describe('when a blog is deleted with DELETE method', () => {
-    test('with id,the blog gets deleted and responds with 204', async () => {
+    test('with specific id,the blog gets deleted and responds with 204', async () => {
         await api
             .delete(`/api/blogs/${blogs[0]._id}`)
             .expect(204)
@@ -109,6 +109,23 @@ describe('when a blog is deleted with DELETE method', () => {
 
         const ids = response.body.map(b => b.id)
         expect(ids).not.toContain(blogs[0]._id)
+
+    })
+})
+
+describe('when a blog is updated by PUT method', () => {
+    test('it updates the likes for the given id', async () => {
+        const updatedLikes = 42069
+        const updatedBlogId = blogs[0]._id
+        await api
+            .put(`/api/blogs/${updatedBlogId}`)
+            .send({
+                likes: updatedLikes
+            })
+
+        const response = await api.get('/api/blogs/')
+
+        expect(response.body.find(b => b.id === updatedBlogId).likes).toBe(updatedLikes)
 
     })
 })
