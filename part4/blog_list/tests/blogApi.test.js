@@ -16,7 +16,7 @@ beforeEach(async () => {
     }
 })
 
-describe('when some blogs are saved on database', () => {
+describe('when all the blogs are requested through GET method', () => {
     test('all the blogs are returned as json', async () => {
         const response = await api
             .get('/api/blogs/')
@@ -54,10 +54,7 @@ describe('when a blog is saved by POST method', () => {
         expect(urls).toContain(newBlog.url)
 
     })
-})
-
-describe('when a blog is saved without likes property', () => {
-    test('it defaults to 0 likes', async () => {
+    test('without likes property,it defaults to 0 likes', async () => {
         const newBlog = {
             title: "blog with no likes given",
             author: "Me",
@@ -72,10 +69,7 @@ describe('when a blog is saved without likes property', () => {
 
         expect(response.body.likes).toBe(0)
     })
-})
-
-describe('when a blog is saved without', () => {
-    test('title property,api responds with 400 bad request', async () => {
+    test('without title property,api responds with 400 bad request', async () => {
         const newBlog = {
             author: 'me',
             url: 'nope.com',
@@ -88,7 +82,7 @@ describe('when a blog is saved without', () => {
             .expect(400)
     })
 
-    test('url property,api responds with 400 bad request', async () => {
+    test('without url property,api responds with 400 bad request', async () => {
         const newBlog = {
             title: "No url",
             author: 'me',
@@ -101,6 +95,22 @@ describe('when a blog is saved without', () => {
             .expect(400)
     })
 
+})
+
+describe('when a blog is deleted with DELETE method', () => {
+    test('with id,the blog gets deleted and responds with 204', async () => {
+        await api
+            .delete(`/api/blogs/${blogs[0]._id}`)
+            .expect(204)
+
+        const response = await api.get('/api/blogs/')
+
+        expect(response.body.length).toBe(blogs.length - 1)
+
+        const ids = response.body.map(b => b.id)
+        expect(ids).not.toContain(blogs[0]._id)
+
+    })
 })
 
 afterAll(async () => {
