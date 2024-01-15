@@ -1,7 +1,7 @@
 const mostLikes = require('../utils/list_helper').mostLikes
 const blogs = require('./testBlogs')
 
-describe('author with most likes on his blogs when', () => {
+describe('author with most likes on his blogs', () => {
     test('when checking the whole blog list', () => {
         expect(mostLikes(blogs)).toEqual({
             author: "Edsger W. Dijkstra",
