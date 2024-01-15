@@ -28,7 +28,7 @@ describe('when some blogs are saved on database', () => {
             })
     })
 
-    test('blogs have id property', async () => {
+    test('returned blogs have id property', async () => {
         const response = await api.get('/api/blogs/')
         response.body.map(blog => expect(blog.id).toBeDefined())
     })
