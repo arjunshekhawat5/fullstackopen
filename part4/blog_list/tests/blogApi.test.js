@@ -9,8 +9,8 @@ const api = supertest(app)
 beforeEach(async () => {
     await Blog.deleteMany({})
     let blogObject
-    
-    for (blog of blogs){
+
+    for (blog of blogs) {
         blogObject = new Blog(blog)
         await blogObject.save()
     }
