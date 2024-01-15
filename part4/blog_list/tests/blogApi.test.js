@@ -75,7 +75,7 @@ describe('when a blog is saved without likes property', () => {
 })
 
 describe('when a blog is saved without', () => {
-    test('title property', async () => {
+    test('title property,api responds with 400 bad request', async () => {
         const newBlog = {
             author: 'me',
             url: 'nope.com',
@@ -88,7 +88,7 @@ describe('when a blog is saved without', () => {
             .expect(400)
     })
 
-    test('url property', async () => {
+    test('url property,api responds with 400 bad request', async () => {
         const newBlog = {
             title: "No url",
             author: 'me',
