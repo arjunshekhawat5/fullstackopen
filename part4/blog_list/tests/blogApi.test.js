@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const app = require('../app')
 const Blog = require('../models/blog')
 const blogs = require('./testBlogs')
-const { resolve } = require('path')
 
 const api = supertest(app)
 
@@ -73,6 +72,35 @@ describe('when a blog is saved without likes property', () => {
 
         expect(response.body.likes).toBe(0)
     })
+})
+
+describe('when a blog is saved without', () => {
+    test('title property', async () => {
+        const newBlog = {
+            author: 'me',
+            url: 'nope.com',
+            likes: 69
+        }
+
+        await api
+            .post('/api/blogs/')
+            .send(newBlog)
+            .expect(400)
+    })
+
+    test('url property', async () => {
+        const newBlog = {
+            title: "No url",
+            author: 'me',
+            likes: 69
+        }
+
+        await api
+            .post('/api/blogs/')
+            .send(newBlog)
+            .expect(400)
+    })
+
 })
 
 afterAll(async () => {
