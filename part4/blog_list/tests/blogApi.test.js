@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const app = require('../app')
 const Blog = require('../models/blog')
 const blogs = require('./testBlogs')
+const { resolve } = require('path')
 
 const api = supertest(app)
 
@@ -53,6 +54,24 @@ describe('when a blog is saved by POST method', () => {
         const urls = response.body.map(b => b.url)
         expect(urls).toContain(newBlog.url)
 
+    })
+})
+
+describe('when a blog is saved without likes property', () => {
+    test('it defaults to 0 likes', async () => {
+        const newBlog = {
+            title: "blog with no likes given",
+            author: "Me",
+            url: "mistake.com"
+        }
+
+        const response = await api
+            .post('/api/blogs/')
+            .send(newBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        expect(response.body.likes).toBe(0)
     })
 })
 
