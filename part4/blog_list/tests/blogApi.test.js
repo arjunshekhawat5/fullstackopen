@@ -104,7 +104,6 @@ describe('when a blog is deleted with DELETE method', () => {
             .expect(204)
 
         const response = await api.get('/api/blogs/')
-
         expect(response.body.length).toBe(blogs.length - 1)
 
         const ids = response.body.map(b => b.id)
@@ -117,6 +116,7 @@ describe('when a blog is updated by PUT method', () => {
     test('it updates the likes for the given id', async () => {
         const updatedLikes = 42069
         const updatedBlogId = blogs[0]._id
+
         await api
             .put(`/api/blogs/${updatedBlogId}`)
             .send({
@@ -124,7 +124,6 @@ describe('when a blog is updated by PUT method', () => {
             })
 
         const response = await api.get('/api/blogs/')
-
         expect(response.body.find(b => b.id === updatedBlogId).likes).toBe(updatedLikes)
 
     })
