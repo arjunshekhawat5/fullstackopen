@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const app = require('../app')
 const Blog = require('../models/blog')
 const blogs = require('./testBlogs')
+const { describe } = require('node:test')
 
 const api = supertest(app)
 
@@ -16,7 +17,7 @@ beforeEach(async () => {
     }
 })
 
-describe('tests GET and POST api requests for api/blogs.', () => {
+describe('when some blogs are saved on database', () => {
     test('blogs are returned as json', async () => {
         await api
             .get('/api/blogs/')
@@ -27,8 +28,15 @@ describe('tests GET and POST api requests for api/blogs.', () => {
             })
     })
 
-    afterAll(async () => {
-        await mongoose.connection.close()
+    test('blogs have id property', async () => {
+        const response = await api.get('/api/blogs/')
+        response.body.map(blog => expect(blog.id).toBeDefined())
     })
 
+})
+
+describe('')
+
+afterAll(async () => {
+    await mongoose.connection.close()
 })
