@@ -13,6 +13,16 @@ blogRouter.get('/', async (request, response) => {
     response.json(blogs)
 })
 
+blogRouter.get('/:id', async (request, response) => {
+    logger.info(`getting the user with id ${request.params.id}`)
+
+    const blog = await Blog
+        .findById(request.params.id)
+        .populate('user', { username: 1, name: 1 })
+
+    response.json(blog)
+})
+
 blogRouter.post('/', async (request, response) => {
 
     const user = await User.findOne({})
