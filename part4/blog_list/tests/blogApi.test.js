@@ -2,18 +2,47 @@ const supertest = require('supertest')
 const mongoose = require('mongoose')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const blogs = require('./testBlogs')
 
 const api = supertest(app)
-
+let token;
+let userId;
 beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
     let blogObject
 
+
+    const user = {
+        username: 'blogApiTest dummy',
+        name: 'dummy user',
+        password: 'secret'
+    }
+
+    const savedUserResponse = await api
+        .post('/api/users/')
+        .send(user)
+
+    if (savedUserResponse.status === 201) {
+        userId = savedUserResponse.body.id
+    }
+
+    const res = await api
+        .post('/api/login/')
+        .send({
+            username: user.username,
+            password: user.password
+        })
+
     for (blog of blogs) {
-        blogObject = new Blog(blog)
+        blogObject = new Blog({ ...blog, user: userId })
+        //console.log(blogObject)
         await blogObject.save()
     }
+
+    token = `Bearer ${res.body.token}`
+    //console.log(savedUserResponse.body.id, userId, token)
 })
 
 describe('when all the blogs are requested through GET method', () => {
@@ -44,6 +73,7 @@ describe('when a blog is saved by POST method', () => {
         await api
             .post('/api/blogs/')
             .send(newBlog)
+            .set('authorization', token)
             .expect(201)
             .expect('Content-Type', /application\/json/)
 
@@ -64,6 +94,7 @@ describe('when a blog is saved by POST method', () => {
         const response = await api
             .post('/api/blogs/')
             .send(newBlog)
+            .set('authorization', token)
             .expect(201)
             .expect('Content-Type', /application\/json/)
 
@@ -78,6 +109,7 @@ describe('when a blog is saved by POST method', () => {
 
         await api
             .post('/api/blogs/')
+            .set('authorization', token)
             .send(newBlog)
             .expect(400)
     })
@@ -92,7 +124,25 @@ describe('when a blog is saved by POST method', () => {
         await api
             .post('/api/blogs/')
             .send(newBlog)
+            .set('authorization', token)
             .expect(400)
+    })
+
+    test('without proper user token, api responds with status 401', async () => {
+        const newBlog = {
+            title: "Test blog",
+            author: "Edgar",
+            url: "testURl.com",
+            likes: 42069,
+        }
+        await api
+            .post('/api/blogs/')
+            .send(newBlog)
+            .expect(401)
+            .expect(r => expect(r.body.error).toBe('invalid token'))
+
+        const response = await api.get('/api/blogs')
+        expect(response.body.length).toBe(blogs.length)
     })
 
 })
@@ -101,6 +151,7 @@ describe('when a blog is deleted with DELETE method', () => {
     test('with specific id,the blog gets deleted and responds with 204', async () => {
         await api
             .delete(`/api/blogs/${blogs[0]._id}`)
+            .set('authorization', token)
             .expect(204)
 
         const response = await api.get('/api/blogs/')
