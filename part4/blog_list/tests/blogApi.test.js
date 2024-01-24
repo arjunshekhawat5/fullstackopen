@@ -2,7 +2,6 @@ const supertest = require('supertest')
 const mongoose = require('mongoose')
 const app = require('../app')
 const Blog = require('../models/blog')
-const User = require('../models/user')
 const blogs = require('./testBlogs')
 
 const api = supertest(app)
@@ -10,9 +9,7 @@ let token;
 let userId;
 beforeEach(async () => {
     await Blog.deleteMany({})
-    await User.deleteMany({})
     let blogObject
-
 
     const user = {
         username: 'blogApiTest dummy',
@@ -37,7 +34,6 @@ beforeEach(async () => {
 
     for (blog of blogs) {
         blogObject = new Blog({ ...blog, user: userId })
-        //console.log(blogObject)
         await blogObject.save()
     }
 
@@ -70,6 +66,7 @@ describe('when a blog is saved by POST method', () => {
             url: "testURl.com",
             likes: 42069,
         }
+
         await api
             .post('/api/blogs/')
             .send(newBlog)
@@ -135,6 +132,7 @@ describe('when a blog is saved by POST method', () => {
             url: "testURl.com",
             likes: 42069,
         }
+
         await api
             .post('/api/blogs/')
             .send(newBlog)
