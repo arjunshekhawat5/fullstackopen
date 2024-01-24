@@ -38,7 +38,7 @@ blogRouter.post('/', async (request, response) => {
 
     const user = request.user
     if (!request.user) {
-        return response.status(404).json({ error: 'invalid token' })
+        return response.status(401).json({ error: 'invalid token' })
     }
 
     const blog = new Blog({ ...request.body, user: user.id })
@@ -64,7 +64,7 @@ blogRouter.delete('/:id', async (request, response) => {
     }
 
     if (blog.user.toString() !== request.user.id.toString()) {
-        return response.status(404).json({ error: 'invalid user token' })
+        return response.status(401).json({ error: 'invalid user token' })
     }
 
     logger.info(`deleteing blog post with id ${request.params.id}`)
