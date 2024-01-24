@@ -4,14 +4,14 @@ const logger = require('../utils/logger')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const getToken = (request) => {
+/*const getToken = (request) => {
     const authorization = request.get('authorization')
     if (authorization && authorization.startsWith('Bearer ')) {
         return authorization.replace('Bearer ', '')
     }
 
     return null
-}
+}*/
 
 blogRouter.get('/', async (request, response) => {
 
@@ -36,14 +36,10 @@ blogRouter.get('/:id', async (request, response) => {
 
 blogRouter.post('/', async (request, response) => {
 
-    //const decodedToken = await jwt.verify(getToken(request), process.env.SECRET_KEY)
-    const decodedToken = await jwt.verify(request.token, process.env.SECRET_KEY)
-
-    if (!decodedToken.id) {
+    const user = request.user
+    if (!request.user) {
         return response.status(404).json({ error: 'invalid token' })
     }
-
-    const user = await User.findById(decodedToken.id)
 
     const blog = new Blog({ ...request.body, user: user.id })
 
@@ -61,19 +57,13 @@ blogRouter.post('/', async (request, response) => {
 
 blogRouter.delete('/:id', async (request, response) => {
 
-    const decodedToken = jwt.verify(request.token, process.env.SECRET_KEY)
-
-    if (!decodedToken.id) {
-        return response.status(404).json({ error: 'invalid token' })
-    }
-
     const blog = await Blog.findById(request.params.id)
 
     if (!blog) {
         return response.status(204).end()
     }
 
-    if (blog.user.toString() !== decodedToken.id.toString()) {
+    if (blog.user.toString() !== request.user.id.toString()) {
         return response.status(404).json({ error: 'invalid user token' })
     }
 
@@ -85,6 +75,7 @@ blogRouter.delete('/:id', async (request, response) => {
 })
 
 blogRouter.put('/:id', async (request, response) => {
+
 
     logger.info(`updating blog post with is ${request.params.id}`)
 
