@@ -15,6 +15,12 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
+    const loggenInUser = window.localStorage.getItem('loggedInBlogAppUser')
+
+    if (loggenInUser) {
+      const user = JSON.parse(loggenInUser)
+      setUser(user)
+    }
   }, [])
 
   const handleLogin = async (event) => {
@@ -24,6 +30,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      window.localStorage.setItem(
+        'loggedInBlogAppUser', JSON.stringify(user)
+      )
     }
     catch (exception) {
       setErrorMessage('Wrong credentials')
@@ -31,10 +40,12 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+
   }
 
   const logout = () => {
     setUser(null)
+    window.localStorage.removeItem('loggedInBlogAppUser')
   }
 
   const loginForm = () => (
