@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import CreateBlog from './components/CreateBlog'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -12,9 +13,8 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -51,7 +51,11 @@ const App = () => {
       setErrorMessage('')
     }
     catch (exception) {
-      notify('Wrong Credentials')
+      if (exception.response && exception.response.status === 401) {
+        notify('Invalid username or password');
+      } else {
+        notify('An error occurred while logging in');
+      }
     }
 
   }
@@ -59,22 +63,15 @@ const App = () => {
   const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem('loggedInBlogAppUser')
+    notify('Logged out successfully')
   }
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault()
+  const addBlog = async (newBlog) => {
     try {
-      const newBlog = {
-        "title": title,
-        "author": author,
-        "url": url
-      }
       const response = await blogService.createBlog(newBlog)
-      notify(`a new blog ${title} added`)
+      notify(`a new blog ${newBlog.title} added`)
       setBlogs(blogs.concat(response))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      blogFormRef.current.toggleVisibility()
     }
     catch {
       setErrorMessage('Could not create blog!')
@@ -102,17 +99,9 @@ const App = () => {
         {user.name} is Logged In
         <button onClick={handleLogout}>Logout</button>
       </p>
-      <div>
-        <CreateBlog
-          title={title}
-          author={author}
-          url={url}
-          handleTitleChange={({ target }) => setTitle(target.value)}
-          handleAuthorChange={({ target }) => setAuthor(target.value)}
-          handleUrlChange={({ target }) => setUrl(target.value)}
-          handleSubmit={handleCreateBlog}
-        />
-      </div>
+      <Togglable buttonLabel='New note' ref={blogFormRef}>
+        <CreateBlog addBlog={addBlog} />
+      </Togglable>
     </div>
   )
 
