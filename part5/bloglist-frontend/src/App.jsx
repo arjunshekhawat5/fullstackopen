@@ -86,7 +86,7 @@ const App = () => {
 
 
   const loginForm = () => (
-    <LoginForm 
+    <LoginForm
       username={username}
       password={password}
       handleUsernameChange={({ target }) => setUsername(target.value)}
@@ -103,7 +103,7 @@ const App = () => {
         <button onClick={handleLogout}>Logout</button>
       </p>
       <div>
-        <CreateBlog 
+        <CreateBlog
           title={title}
           author={author}
           url={url}
