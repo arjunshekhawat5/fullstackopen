@@ -27,7 +27,7 @@ const App = () => {
       setUser(user)
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [blogs])
 
   const notify = (msg) => {
     setErrorMessage(msg)
@@ -102,6 +102,11 @@ const App = () => {
       <Togglable buttonLabel='New note' ref={blogFormRef}>
         <CreateBlog addBlog={addBlog} />
       </Togglable>
+      <div>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
+        )}
+      </div>
     </div>
   )
 
