@@ -22,7 +22,7 @@ userRouter.post('/', async (request, response) => {
 
     if (!username || !password || username.length < 3 || password.length < 3) {
 
-        logger.error('invalid username or password, aborting createing new user')
+        logger.error('invalid username or password, aborting creating new user', username, password)
 
         return response.status(400).json({ error: 'Invalid Username or Password' }).end()
     }
@@ -31,7 +31,7 @@ userRouter.post('/', async (request, response) => {
 
     if (existingUsers) {
 
-        logger.error('username already exists, aborting createing new user')
+        logger.error('username already exists, aborting creating new user')
 
         return response.status(400).json({ error: 'Username must be unique!' }).end()
     }
