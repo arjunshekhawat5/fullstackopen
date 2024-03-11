@@ -14,7 +14,7 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  const addSortedBlogs = (blogs) => {
+  const sortBlogs = (blogs) => {
     const sortedBlogs = blogs.sort((a, b) => {
       return b.likes - a.likes
     })
@@ -24,7 +24,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      addSortedBlogs(blogs)
+      sortBlogs(blogs)
     )
     const loggedInUser = window.localStorage.getItem('loggedInBlogAppUser')
 
@@ -72,7 +72,7 @@ const App = () => {
     try {
       const response = await blogService.createBlog(newBlog)
       notify(`a new blog ${newBlog.title} added`)
-      addSortedBlogs(blogs.concat(response))
+      sortBlogs(blogs.concat(response))
       blogFormRef.current.toggleVisibility()
     }
     catch (exception) {
@@ -84,11 +84,11 @@ const App = () => {
     }
   }
 
-  const deleteBlog = (blgo) => {
+  const deleteBlog = (blog) => {
     try {
-      blogService.deleteBlog(blgo.id)
-      notify(`a blog ${blgo.title} deleted`)
-      addSortedBlogs(blogs.filter(b => b.id !== blgo.id))
+      blogService.deleteBlog(blog.id)
+      notify(`a blog ${blog.title} deleted`)
+      sortBlogs(blogs.filter(b => b.id !== blog.id))
     }
     catch (exception) {
       if (exception.response && exception.response.status === 401) {
@@ -99,8 +99,27 @@ const App = () => {
     }
   }
 
+  const likeBlog = (blog) => {
+    try {
+      blogService.updateBlog(blog.id, blog)
+      notify(`a blog ${blog.title} liked`)
+      sortBlogs(blogs.map(b => b.id === blog.id ? blog : b))
+    }
+    catch (exception) {
+      if (exception.response && exception.response.status === 401) {
+        notify('Invalid user token!');
+      } else {
+        notify('Error while liking a blog!');
+      }
+    }
+  }
+
   const loginForm = () => (
-    <LoginForm handleLogin={handleLogin} />
+    <LoginForm
+      handleLogin={handleLogin}
+      deleteBlog={deleteBlog}
+      likeBlog={likeBlog}
+    />
   )
 
   const blogForm = () => (
