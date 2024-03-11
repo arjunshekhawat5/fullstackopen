@@ -1,9 +1,9 @@
 import { useState } from "react"
 
-const Blog = ({ blog, deleteBlog, likeBlog }) => {
+const Blog = ({ id, blog, deleteBlog, likeBlog }) => {
   const [visible, setVisible] = useState(false)
 
-  const user = JSON.parse(window.localStorage.getItem('loggedInBlogAppUser')).name
+  const username = JSON.parse(window.localStorage.getItem('loggedInBlogAppUser')).username
 
   const showWhenVisible = { display: visible ? '' : 'none' }
 
@@ -15,38 +15,19 @@ const Blog = ({ blog, deleteBlog, likeBlog }) => {
     margin: 10
   }
 
-  const hideButton = () => {
-    return (
-      <button onClick={() => setVisible(prev => !prev)}>
-        {visible ? 'hide' : 'view'}
-      </button>
-    )
-  }
-
-  const deleteButton = () => {
-    return (
-      user === blog.user.name
-        ? <button onClick={() => deleteBlog(blog)}>Delete</button>
-        : ''
-    )
-  }
-
-  const likeButton = () => {
-    return (
-      <button onClick={() => likeBlog({ ...blog, likes: blog.likes + 1 })}>Like</button>
-    )
-  }
-
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} {blog.author} {hideButton()}
+        {blog.title} {blog.author}
+        <button onClick={() => setVisible(prev => !prev)}>
+          {visible ? 'hide' : 'view'}
+        </button>
       </div>
       <div style={showWhenVisible}>
         {blog.url} <br />
-        Likes {blog.likes} {likeButton()}
+        Likes {blog.likes} <button onClick={() => likeBlog(blog)}>Like</button> <br />
         {blog.user.name} <br />
-        {deleteButton()}
+        {username === blog.user.username ? <button onClick={() => deleteBlog(blog)}>Delete</button> : ''}
       </div>
     </div>
   )
