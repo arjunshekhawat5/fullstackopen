@@ -49,6 +49,7 @@ blogRouter.post('/', async (request, response) => {
         return
     }
 
+    logger.info(`creating a new blog with id ${blog.id}`)
     const savedBlog = await blog.save()
     const populatedBlog = await Blog.findById(savedBlog._id).populate('user', { username: 1, name: 1 });
     //console.log(populatedBlog)
