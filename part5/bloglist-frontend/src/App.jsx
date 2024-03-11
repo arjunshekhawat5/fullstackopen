@@ -14,9 +14,17 @@ const App = () => {
 
   const blogFormRef = useRef()
 
+  const addSortedBlogs = (blogs) => {
+    const sortedBlogs = blogs.sort((a, b) => {
+      return b.likes - a.likes
+    })
+    setBlogs(sortedBlogs)
+    return
+  }
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      addSortedBlogs(blogs)
     )
     const loggedInUser = window.localStorage.getItem('loggedInBlogAppUser')
 
@@ -33,6 +41,7 @@ const App = () => {
       setErrorMessage('')
     }, 5000)
   }
+
 
   const handleLogin = async (userCredentials) => {
     try {
@@ -63,7 +72,7 @@ const App = () => {
     try {
       const response = await blogService.createBlog(newBlog)
       notify(`a new blog ${newBlog.title} added`)
-      setBlogs(blogs.concat(response))
+      addSortedBlogs(blogs.concat(response))
       blogFormRef.current.toggleVisibility()
     }
     catch (exception) {
