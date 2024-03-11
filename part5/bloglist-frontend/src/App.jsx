@@ -84,6 +84,20 @@ const App = () => {
     }
   }
 
+  const deleteBlog = (blgo) => {
+    try {
+      blogService.deleteBlog(blgo.id)
+      notify(`a blog ${blgo.title} deleted`)
+      addSortedBlogs(blogs.filter(b => b.id !== blgo.id))
+    }
+    catch (exception) {
+      if (exception.response && exception.response.status === 401) {
+        notify('Invalid user token!');
+      } else {
+        notify('Error while deleting a blog!');
+      }
+    }
+  }
 
   const loginForm = () => (
     <LoginForm handleLogin={handleLogin} />
