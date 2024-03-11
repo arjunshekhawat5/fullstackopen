@@ -1,4 +1,5 @@
 const blogRouter = require('express').Router()
+const { log } = require('console')
 const Blog = require('../models/blog')
 const logger = require('../utils/logger')
 const jwt = require('jsonwebtoken')
@@ -49,7 +50,9 @@ blogRouter.post('/', async (request, response) => {
     }
 
     const savedBlog = await blog.save()
-    response.status(201).json(savedBlog)
+    const populatedBlog = await Blog.findById(savedBlog._id).populate('user', { username: 1, name: 1 });
+    //console.log(populatedBlog)
+    response.status(201).json(populatedBlog)
 
     user.blogs = user.blogs.concat(savedBlog.id)
     await user.save()
@@ -67,7 +70,7 @@ blogRouter.delete('/:id', async (request, response) => {
         return response.status(401).json({ error: 'invalid user token' })
     }
 
-    logger.info(`deleteing blog post with id ${request.params.id}`)
+    logger.info(`deleting blog post with id ${request.params.id}`)
 
     await Blog.findByIdAndDelete(request.params.id)
 
@@ -76,18 +79,15 @@ blogRouter.delete('/:id', async (request, response) => {
 
 blogRouter.put('/:id', async (request, response) => {
 
-
-    logger.info(`updating blog post with is ${request.params.id}`)
+    logger.info(`updating blog post with id ${request.params.id}`)
 
     const updatedBlog = await Blog.findByIdAndUpdate(
         request.params.id,
         { $set: { likes: request.body.likes } },
-        { new: true })
-
+        { new: true }).populate('user', { username: 1, name: 1 })
     if (!updatedBlog) {
         return response.status(404).end()
     }
-
     response.json(updatedBlog)
 })
 
