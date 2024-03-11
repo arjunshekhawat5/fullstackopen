@@ -11,8 +11,6 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
 
   const blogFormRef = useRef()
 
@@ -36,18 +34,14 @@ const App = () => {
     }, 5000)
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async (userCredentials) => {
     try {
-      const user = await loginService.login({ username, password })
-
+      const user = await loginService.login(userCredentials)
       window.localStorage.setItem(
         'loggedInBlogAppUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
       setErrorMessage('')
     }
     catch (exception) {
@@ -57,7 +51,6 @@ const App = () => {
         notify('An error occurred while logging in');
       }
     }
-
   }
 
   const handleLogout = () => {
@@ -73,23 +66,18 @@ const App = () => {
       setBlogs(blogs.concat(response))
       blogFormRef.current.toggleVisibility()
     }
-    catch {
-      setErrorMessage('Could not create blog!')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+    catch (exception) {
+      if (exception.response && exception.response.status === 401) {
+        notify('Invalid user token!');
+      } else {
+        notify('Error while adding a blog!');
+      }
     }
   }
 
 
   const loginForm = () => (
-    <LoginForm
-      username={username}
-      password={password}
-      handleUsernameChange={({ target }) => setUsername(target.value)}
-      handlePasswordChange={({ target }) => setPassword(target.value)}
-      handleSubmit={handleLogin}
-    />
+    <LoginForm handleLogin={handleLogin} />
   )
 
   const blogForm = () => (
@@ -119,5 +107,6 @@ const App = () => {
   )
 
 }
+
 
 export default App
