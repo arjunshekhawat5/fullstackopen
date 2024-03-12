@@ -55,10 +55,10 @@ const App = () => {
     }
     catch (exception) {
       if (exception.response && exception.response.status === 401) {
-        notify('Invalid username or password');
+        notify('Invalid username or password')
       }
       else {
-        notify('An error occurred while logging in');
+        notify('An error occurred while logging in')
       }
     }
   }
@@ -74,15 +74,15 @@ const App = () => {
       const response = await blogService.createBlog(newBlog)
       notify(`a new blog ${newBlog.title} added`)
       sortBlogs([...blogs, response])
-      console.log(response);
+      console.log(response)
       blogFormRef.current.toggleVisibility()
     }
     catch (exception) {
       if (exception.response && exception.response.status === 401) {
-        notify('Invalid user token!');
+        notify('Invalid user token!')
       }
       else {
-        notify('Error while adding a blog!');
+        notify('Error while adding a blog!')
       }
     }
   }
@@ -95,10 +95,10 @@ const App = () => {
     }
     catch (exception) {
       if (exception.response && exception.response.status === 401) {
-        notify('Invalid user token!');
+        notify('Invalid user token!')
       }
       else {
-        notify('Error while deleting a blog!');
+        notify('Error while deleting a blog!')
       }
     }
   }
@@ -113,10 +113,10 @@ const App = () => {
     }
     catch (exception) {
       if (exception.response && exception.response.status === 401) {
-        notify('Invalid user token!');
+        notify('Invalid user token!')
       }
       else {
-        notify('Error while liking a blog!');
+        notify('Error while liking a blog!')
       }
     }
   }
