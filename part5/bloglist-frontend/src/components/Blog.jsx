@@ -3,7 +3,8 @@ import { useState } from 'react'
 const Blog = ({ id, blog, deleteBlog, likeBlog }) => {
   const [visible, setVisible] = useState(false)
 
-  const username = JSON.parse(window.localStorage.getItem('loggedInBlogAppUser')).username
+  const user = JSON.parse(window.localStorage.getItem('loggedInBlogAppUser'))
+  const username = user && user.username
 
   const showWhenVisible = { display: visible ? '' : 'none' }
 
@@ -17,13 +18,13 @@ const Blog = ({ id, blog, deleteBlog, likeBlog }) => {
 
   return (
     <div style={blogStyle}>
-      <div>
+      <div className='title-author'>
         {blog.title} {blog.author}
         <button onClick={() => setVisible(prev => !prev)}>
           {visible ? 'hide' : 'view'}
         </button>
       </div>
-      <div style={showWhenVisible}>
+      <div className='details' style={showWhenVisible}>
         {blog.url} <br />
         Likes {blog.likes} <button onClick={() => likeBlog(blog)}>Like</button> <br />
         {blog.user.name} <br />
