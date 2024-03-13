@@ -21,11 +21,13 @@ const CreateBlog = ({ addBlog }) => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <div>title: <input
-          type='text'
-          value={title}
-          name='title'
-          onChange={(event) => setTitle(event.target.value)} />
+        <div>
+          title: <input
+            type='text'
+            value={title}
+            name='title'
+            onChange={(event) => setTitle(event.target.value)}
+            placeholder='title' />
         </div>
         <div>
           <div>
@@ -33,14 +35,16 @@ const CreateBlog = ({ addBlog }) => {
               type='text'
               value={author}
               name='author'
-              onChange={(event) => setAuthor(event.target.value)} />
+              onChange={(event) => setAuthor(event.target.value)}
+              placeholder='author' />
           </div>
           <div>
             url: <input
               type='text'
               value={url}
               name='url'
-              onChange={(event) => setUrl(event.target.value)} />
+              onChange={(event) => setUrl(event.target.value)}
+              placeholder='url' />
           </div>
         </div>
         <button type='submit'>Create Blog</button>
