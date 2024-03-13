@@ -4,10 +4,9 @@ import userEvent from '@testing-library/user-event'
 
 
 describe('<Blog />', () => {
-  let container
-
+  let blog
   beforeEach(() => {
-    const blog = {
+    blog = {
       title: 'testing blog render',
       author: 'test user',
       url: 'should not render.com',
@@ -17,12 +16,10 @@ describe('<Blog />', () => {
         username: 'me'
       }
     }
-
-    container = render(<Blog blog={blog} />).container
-
   })
 
   test('renders blog without likes and URL', () => {
+    const { container } = render(<Blog blog={blog} />)
     let div = container.querySelector('.title-author')
 
     expect(div).toHaveTextContent(
@@ -42,18 +39,30 @@ describe('<Blog />', () => {
 
 
   test('renders likes and url after clicking button', async () => {
+    const { container } = render(<Blog blog={blog} />)
     const user = userEvent.setup()
-
     const button = screen.getByText('view')
-
     await user.click(button)
-
-    screen.debug()
 
     const div = container.querySelector('.details')
     expect(div).not.toHaveStyle(
       'display: none'
     )
 
+  })
+
+  test('clicking like button twice', async () => {
+    const user = userEvent.setup()
+    const mockHandler = vi.fn()
+    const { container } = render(<Blog blog={blog} likeBlog={mockHandler} />)
+
+    const button = screen.getByText('view')
+    await user.click(button)
+
+    const likeButton = screen.getByText('Like')
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
   })
 })
