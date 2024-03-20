@@ -54,7 +54,7 @@ describe('<Blog />', () => {
   test('clicking like button twice', async () => {
     const user = userEvent.setup()
     const mockHandler = vi.fn()
-    const { container } = render(<Blog blog={blog} likeBlog={mockHandler} />)
+    render(<Blog blog={blog} likeBlog={mockHandler} />)
 
     const button = screen.getByText('view')
     await user.click(button)
